@@ -204,7 +204,7 @@ AC_ARG_ENABLE([stackguard-randomization],
 	      [enable_stackguard_randomize=$enableval],
 	      [enable_stackguard_randomize=no])
 if test "$enable_stackguard_randomize" = yes; then
-  AC_DEFINE(ENABLE_STACKGUARD_RANDOMIZE)
+  AC_DEFINE(ENABLE_STACKGUARD_RANDOMIZE, 1, [option])
 fi
 
 AC_ARG_ENABLE([hidden-plt],
@@ -213,7 +213,7 @@ AC_ARG_ENABLE([hidden-plt],
 	      [hidden=$enableval],
 	      [hidden=yes])
 if test "x$hidden" = xno; then
-  AC_DEFINE(NO_HIDDEN)
+  AC_DEFINE(NO_HIDDEN, 1, [option])
 fi
 
 AC_ARG_ENABLE([bind-now],
@@ -223,7 +223,7 @@ AC_ARG_ENABLE([bind-now],
 	      [bindnow=no])
 AC_SUBST(bindnow)
 if test "x$bindnow" = xyes; then
-  AC_DEFINE(BIND_NOW)
+  AC_DEFINE([BIND_NOW], 1, [option])
 fi
 
 dnl Build glibc with -fstack-protector, -fstack-protector-all, or
@@ -235,7 +235,7 @@ AC_ARG_ENABLE([stack-protector],
 	      [enable_stack_protector=no])
 case "$enable_stack_protector" in
 all|yes|no|strong) ;;
-*) AC_MSG_ERROR([Not a valid argument for --enable-stack-protector: \"$enable_stack_protector\"]);;
+*) AC_MSG_ERROR([Not a valid argument for --enable-stack-protector: "$enable_stack_protector"]);;
 esac
 
 dnl On some platforms we cannot use dynamic loading.  We must provide
@@ -248,7 +248,7 @@ AC_ARG_ENABLE([static-nss],
 dnl Enable static NSS also if we build no shared objects.
 if test x"$static_nss" = xyes || test x"$shared" = xno; then
   static_nss=yes
-  AC_DEFINE(DO_STATIC_NSS)
+  AC_DEFINE([DO_STATIC_NSS], 1, [option])
 fi
 
 AC_ARG_ENABLE([force-install],
@@ -415,7 +415,7 @@ void foo (int i, void *p)
 }]])], [libc_cv_sdt=yes], [libc_cv_sdt=no])
   CFLAGS="$old_CFLAGS"])
   if test $libc_cv_sdt = yes; then
-    AC_DEFINE([USE_STAP_PROBE])
+    AC_DEFINE([USE_STAP_PROBE], 1, [option])
   elif test "x$systemtap" != xauto; then
     AC_MSG_FAILURE([systemtap support needs sys/sdt.h with asm support])
   fi
@@ -442,7 +442,7 @@ AC_ARG_ENABLE([pt_chown],
 	      [build_pt_chown=no])
 AC_SUBST(build_pt_chown)
 if test "$build_pt_chown" = yes; then
-  AC_DEFINE(HAVE_PT_CHOWN)
+  AC_DEFINE(HAVE_PT_CHOWN, 1, [option])
 fi
 
 AC_ARG_ENABLE([tunables],
@@ -452,7 +452,7 @@ AC_ARG_ENABLE([tunables],
 	      [have_tunables=yes])
 AC_SUBST(have_tunables)
 if test "$have_tunables" = yes; then
-  AC_DEFINE(HAVE_TUNABLES)
+  AC_DEFINE(HAVE_TUNABLES, 1, [option])
 fi
 
 # The abi-tags file uses a fairly simplistic model for name recognition that
@@ -594,21 +594,21 @@ stack_protector=
 no_stack_protector=
 if test "$libc_cv_ssp" = yes; then
   no_stack_protector="-fno-stack-protector -DSTACK_PROTECTOR_LEVEL=0"
-  AC_DEFINE(HAVE_CC_NO_STACK_PROTECTOR)
+  AC_DEFINE(HAVE_CC_NO_STACK_PROTECTOR, 1, [option])
 fi
 
 if test "$enable_stack_protector" = yes && test "$libc_cv_ssp" = yes; then
   stack_protector="-fstack-protector"
-  AC_DEFINE(STACK_PROTECTOR_LEVEL, 1)
+  AC_DEFINE(STACK_PROTECTOR_LEVEL, 1, [option])
 elif test "$enable_stack_protector" = all && test "$libc_cv_ssp_all" = yes; then
   stack_protector="-fstack-protector-all"
-  AC_DEFINE(STACK_PROTECTOR_LEVEL, 2)
+  AC_DEFINE(STACK_PROTECTOR_LEVEL, 2, [option])
 elif test "$enable_stack_protector" = strong && test "$libc_cv_ssp_strong" = yes; then
   stack_protector="-fstack-protector-strong"
-  AC_DEFINE(STACK_PROTECTOR_LEVEL, 3)
+  AC_DEFINE(STACK_PROTECTOR_LEVEL, 3, [option])
 else
   stack_protector="-fno-stack-protector"
-  AC_DEFINE(STACK_PROTECTOR_LEVEL, 0)
+  AC_DEFINE(STACK_PROTECTOR_LEVEL, 0, [option])
 fi
 AC_SUBST(libc_cv_ssp)
 AC_SUBST(stack_protector)
@@ -867,7 +867,7 @@ case $sysnames in
   ;;
 esac
 if test x"$multi_arch" != xno; then
-  AC_DEFINE(USE_MULTIARCH)
+  AC_DEFINE(USE_MULTIARCH, 1, [option])
 fi
 AC_SUBST(multi_arch)
 
@@ -1025,7 +1025,7 @@ AC_CHECK_PROG_VER(BISON, bison, --version,
 
 AC_CACHE_CHECK([if $CC is sufficient to build libc], libc_cv_compiler_ok, [
 AC_TRY_COMPILE([], [
-#if !defined __GNUC__ || __GNUC__ < 6 || (__GNUC__ == 6 && __GNUC_MINOR__ < 2)
+#if !defined(__clang__) && (!defined __GNUC__ || __GNUC__ < 6 || (__GNUC__ == 6 && __GNUC_MINOR__ < 2))
 #error insufficient compiler
 #endif],
 	       [libc_cv_compiler_ok=yes],
@@ -1170,7 +1170,7 @@ else
 fi
 rm -f conftest*])
 if test $libc_cv_asm_set_directive = yes; then
-  AC_DEFINE(HAVE_ASM_SET_DIRECTIVE)
+  AC_DEFINE(HAVE_ASM_SET_DIRECTIVE, 1, [option])
 fi
 
 AC_CACHE_CHECK(linker support for protected data symbol,
@@ -1247,7 +1247,7 @@ AC_CACHE_CHECK(whether to put _rtld_local into .sdata section,
 		rm -f conftest.c conftest.so
 	       ])
 if test $libc_cv_have_sdata_section = yes; then
-  AC_DEFINE(HAVE_SDATA_SECTION)
+  AC_DEFINE(HAVE_SDATA_SECTION, 1, [option])
 fi
 
 AC_CACHE_CHECK(whether to use .ctors/.dtors header and trailer,
@@ -1294,7 +1294,7 @@ EOF
   rm -f conftest*])
 AC_SUBST(libc_cv_cc_with_libunwind)
 if test $libc_cv_cc_with_libunwind = yes; then
-  AC_DEFINE(HAVE_CC_WITH_LIBUNWIND)
+  AC_DEFINE(HAVE_CC_WITH_LIBUNWIND, 1, [option])
 fi
 
 ASFLAGS_config=
@@ -1346,7 +1346,7 @@ else
 fi
 rm -f conftest*])
 if test "$libc_cv_z_combreloc" = yes; then
-  AC_DEFINE(HAVE_Z_COMBRELOC)
+  AC_DEFINE(HAVE_Z_COMBRELOC, 1, [option])
 fi
 AC_SUBST(libc_cv_z_combreloc)
 
@@ -1533,7 +1533,7 @@ EOF
 		rm -f conftest.{c,s}
 		])
 if test $libc_cv_have_section_quotes = yes; then
-  AC_DEFINE(HAVE_SECTION_QUOTES)
+  AC_DEFINE(HAVE_SECTION_QUOTES, 1, [option])
 fi
 
 AC_CACHE_CHECK(for __builtin_memset, libc_cv_gcc_builtin_memset, [dnl
@@ -1552,7 +1552,7 @@ else
 fi
 rm -f conftest* ])
 if test "$libc_cv_gcc_builtin_memset" = yes ; then
-  AC_DEFINE(HAVE_BUILTIN_MEMSET)
+  AC_DEFINE(HAVE_BUILTIN_MEMSET, 1, [option])
 fi
 
 AC_CACHE_CHECK(for redirection of built-in functions, libc_cv_gcc_builtin_redirection, [dnl
@@ -1613,7 +1613,7 @@ then
 fi
 rm -f conftest*])
 if test $libc_cv_cc_loop_to_function = yes; then
-  AC_DEFINE(HAVE_CC_INHIBIT_LOOP_TO_LIBCALL)
+  AC_DEFINE(HAVE_CC_INHIBIT_LOOP_TO_LIBCALL, 1, [option])
 fi
 AC_SUBST(libc_cv_cc_loop_to_function)
 
@@ -1715,7 +1715,7 @@ LDFLAGS="$old_LDFLAGS"
 LIBS="$old_LIBS"
 ])
 if test "$libc_cv_ehdr_start" = yes; then
-  AC_DEFINE([HAVE_EHDR_START])
+  AC_DEFINE([HAVE_EHDR_START], 1, [option])
 elif test "$libc_cv_ehdr_start" = broken; then
   AC_MSG_WARN([linker is broken -- you should upgrade])
 fi
@@ -1734,7 +1734,7 @@ if test -z "$libc_undefs"; then
   libc_cv_builtin_trap=yes
 fi])])
 if test $libc_cv_builtin_trap = yes; then
-  AC_DEFINE([HAVE_BUILTIN_TRAP])
+  AC_DEFINE([HAVE_BUILTIN_TRAP, 1, [option]])
 fi
 
 dnl C++ feature tests.
@@ -1803,26 +1803,26 @@ AC_SUBST(libc_extra_cflags)
 AC_SUBST(libc_extra_cppflags)
 
 if test x$libc_cv_gcc_unwind_find_fde = xyes; then
-  AC_DEFINE(EXPORT_UNWIND_FIND_FDE)
+  AC_DEFINE(EXPORT_UNWIND_FIND_FDE, 1, [option])
 fi
 AC_SUBST(libc_cv_gcc_unwind_find_fde)
 
 # A sysdeps configure fragment can reset this if IFUNC is not actually
 # usable even though the assembler knows how to generate the symbol type.
 if test x"$libc_cv_ld_gnu_indirect_function" = xyes; then
-  AC_DEFINE(HAVE_IFUNC)
+  AC_DEFINE(HAVE_IFUNC, 1, [option])
 fi
 LIBC_CONFIG_VAR([have-ifunc], [$libc_cv_ld_gnu_indirect_function])
 
 if test x"$libc_cv_gcc_indirect_function" = xyes; then
-  AC_DEFINE(HAVE_GCC_IFUNC)
+  AC_DEFINE(HAVE_GCC_IFUNC, 1, [option])
 fi
 
 # This is far from the AC_ARG_ENABLE that sets it so that a sysdeps
 # configure fragment can override the value to prevent this AC_DEFINE.
 AC_SUBST(use_nscd)
 if test "x$use_nscd" != xno; then
-  AC_DEFINE([USE_NSCD])
+  AC_DEFINE([USE_NSCD], 1, [option])
 fi
 if test "x$build_nscd" = xdefault; then
   build_nscd=$use_nscd
@@ -1836,7 +1836,7 @@ AC_SUBST(libc_cv_localstatedir)
 AC_SUBST(libc_cv_rootsbindir)
 
 if test x$use_ldconfig = xyes; then
-  AC_DEFINE(USE_LDCONFIG)
+  AC_DEFINE(USE_LDCONFIG, 1, [option])
 fi
 AC_SUBST(use_ldconfig)
 AC_SUBST(ldd_rewrite_script)
@@ -1884,7 +1884,7 @@ if test "$static_pie" = yes; then
   fi
   # Default to PIE.
   libc_cv_pie_default=yes
-  AC_DEFINE(ENABLE_STATIC_PIE)
+  AC_DEFINE(ENABLE_STATIC_PIE, 1, [static_pie])
 fi
 LIBC_CONFIG_VAR([enable-static-pie], [$static_pie])
 
