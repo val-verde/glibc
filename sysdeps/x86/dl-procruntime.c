@@ -63,6 +63,9 @@ PROCINFO_CLASS unsigned int _dl_x86_feature_1
 # else
 PROCINFO_CLASS struct dl_x86_feature_control _dl_x86_feature_control
 # endif
+# ifndef DEFAULT_DL_X86_CET_CONTROL
+# define DEFAULT_DL_X86_CET_CONTROL cet_elf_property
+# endif
 # ifndef PROCINFO_DECL
 = {
     .ibt = DEFAULT_DL_X86_CET_CONTROL,
