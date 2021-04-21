@@ -384,7 +384,7 @@ AC_ARG_ENABLE([obsolete-rpc],
 AC_SUBST(link_obsolete_rpc)
 
 if test "$link_obsolete_rpc" = yes; then
-  AC_DEFINE(LINK_OBSOLETE_RPC)
+  AC_DEFINE(LINK_OBSOLETE_RPC, 1, [option])
 fi
 
 AC_ARG_ENABLE([obsolete-nsl],
@@ -395,7 +395,7 @@ AC_ARG_ENABLE([obsolete-nsl],
 AC_SUBST(build_obsolete_nsl)
 
 if test "$build_obsolete_nsl" = yes; then
-  AC_DEFINE(LINK_OBSOLETE_NSL)
+  AC_DEFINE(LINK_OBSOLETE_NSL, 1, [option])
 fi
 
 AC_ARG_ENABLE([systemtap],
@@ -1277,7 +1277,7 @@ __attribute__ ((destructor))  void dtor (void) { asm (""); }
     ])
 ])
 if test $libc_cv_ctors_header = no; then
-  AC_DEFINE(NO_CTORS_DTORS_SECTIONS)
+  AC_DEFINE(NO_CTORS_DTORS_SECTIONS, 1, [option])
 fi
 
 AC_CACHE_CHECK(for libunwind-support in compiler,
